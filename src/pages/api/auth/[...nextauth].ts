@@ -12,6 +12,14 @@ export default NextAuth({
       clientSecret: process.env.GITHUB_SECRET || "",
       // @ts-ignore
       scope: "read:user",
+      profile(profile) {
+        return {
+          id: profile.id.toString(),
+          name: profile.name || profile.login,
+          email: profile.email,
+          image: profile.avatar_url,
+        };
+      },
     }),
   ],
   callbacks: {
