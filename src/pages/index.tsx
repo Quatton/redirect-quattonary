@@ -16,7 +16,15 @@ const Home: NextPage = () => {
           <CreateLinkForm />
         </Suspense>
       ) : (
-        <div>Not Logged in</div>
+        <>
+          <div>Not Logged in</div>
+          <button
+            className="rounded bg-pink-500 px-4 py-2 font-medium mt-4"
+            onClick={() => signIn()}
+          >
+            Sign In
+          </button>
+        </>
       )}
     </div>
   );
