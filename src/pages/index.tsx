@@ -11,9 +11,13 @@ const Home: NextPage = () => {
   const { data: session } = useSession();
   return (
     <div className="flex flex-col justify-center items-center h-screen bg-gray-950 text-white">
-      <Suspense>
-        <CreateLinkForm />
-      </Suspense>
+      {session ? (
+        <Suspense>
+          <CreateLinkForm />
+        </Suspense>
+      ) : (
+        <div>Not Logged in</div>
+      )}
     </div>
   );
 };
