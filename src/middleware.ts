@@ -15,5 +15,5 @@ export async function middleware(req: NextRequest, ev: NextFetchEvent) {
 }
 
 export const config = {
-  matcher: "/((?!api|static|favicon.ico).*)",
+  matcher: "/((?!api|static|_next).*)",
 };
