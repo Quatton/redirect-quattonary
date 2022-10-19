@@ -18,6 +18,12 @@ export const appRouter = trpc
       return { used: count > 0 };
     },
   })
+  .query("getAllSlugs", {
+    async resolve() {
+      const data = await prisma.shortLink.findMany();
+      return { shortlinks: data };
+    },
+  })
   .mutation("createSlug", {
     input: z.object({
       slug: z.string(),
@@ -26,6 +32,28 @@ export const appRouter = trpc
     async resolve({ input }) {
       try {
         await prisma.shortLink.create({
+          data: {
+            slug: input.slug,
+            url: input.url,
+          },
+        });
+      } catch (e) {
+        console.log(e);
+      }
+    },
+  })
+  .mutation("updateSlug", {
+    input: z.object({
+      id: z.number(),
+      slug: z.string(),
+      url: z.string(),
+    }),
+    async resolve({ input }) {
+      try {
+        await prisma.shortLink.update({
+          where: {
+            id: input.id,
+          },
           data: {
             slug: input.slug,
             url: input.url,

@@ -2,6 +2,7 @@ import type { NextPage } from "next";
 import { signIn, useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
+import ViewLinks from "../components/view-links";
 
 const CreateLinkForm = dynamic(() => import("../components/create-link"), {
   ssr: false,
@@ -11,12 +12,17 @@ const Admin: NextPage = () => {
   const { data: session } = useSession();
 
   return (
-    <div className="flex flex-col justify-center items-center h-screen bg-gray-950 text-white">
+    <div className="flex flex-col justify-center items-center gap-4 h-screen bg-gray-950 text-white">
       {session ? (
         session.user.role === "admin" ? (
-          <Suspense>
-            <CreateLinkForm />
-          </Suspense>
+          <>
+            <Suspense>
+              <CreateLinkForm />
+            </Suspense>
+            <Suspense>
+              <ViewLinks />
+            </Suspense>
+          </>
         ) : (
           <div>Not authorized</div>
         )

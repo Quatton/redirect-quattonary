@@ -1,4 +1,3 @@
-import type { NextPage } from "next";
 import { useState } from "react";
 import classNames from "classnames";
 import { nanoid } from "nanoid";
@@ -11,7 +10,7 @@ type Form = {
   url: string;
 };
 
-const CreateLinkForm: NextPage = () => {
+const CreateLinkForm: React.FC = () => {
   const [form, setForm] = useState<Form>({ slug: "", url: "" });
   const url = window.location.origin;
 
@@ -63,7 +62,7 @@ const CreateLinkForm: NextPage = () => {
         e.preventDefault();
         createSlug.mutate({ ...form });
       }}
-      className="flex flex-col justify-center h-screen sm:w-2/3 md:w-1/2 lg:w-1/3"
+      className="flex flex-col justify-center sm:w-2/3 md:w-1/2 lg:w-1/3"
     >
       {slugCheck.data?.used && (
         <span className="font-medium mr-2 text-center text-red-500">
