@@ -1,3 +1,4 @@
+import type { NextPage } from "next";
 import { useState } from "react";
 import classNames from "classnames";
 import { nanoid } from "nanoid";

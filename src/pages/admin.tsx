@@ -12,13 +12,11 @@ const Admin: NextPage = () => {
   const { data: session } = useSession();
 
   return (
-    <div className="flex flex-col justify-center items-center gap-4 h-screen bg-gray-950 text-white">
-      {session ? (
-        session.user.role === "admin" ? (
+    <div className="flex flex-col justify-center items-center h-screen bg-gray-950 text-white">
+      {(session || process.env.NODE_ENV) === "development" ? (
+        session?.user.role === "admin" ||
+        process.env.NODE_ENV === "development" ? (
           <>
-            <Suspense>
-              <CreateLinkForm />
-            </Suspense>
             <Suspense>
               <ViewLinks />
             </Suspense>

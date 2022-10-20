@@ -1,3 +1,24 @@
 @tailwind base;
+*,
+*::before,
+*::after {
+  @apply box-border;
+}
+
+th {
+  @apply px-6 py-3 bg-pink-500;
+}
+td {
+  @apply p-2;
+}
+td > input {
+  @apply bg-transparent px-4 py-2 truncate 
+  bg-stone-800 rounded-md border-slate-300 border
+  focus:shadow-inner shadow-md focus:ring-offset-2 focus:ring-1
+focus:ring-pink-500 focus:outline-none ring-offset-pink-500;
+}
+td:nth-child(4) {
+  @apply text-center;
+}
 @tailwind components;
 @tailwind utilities;
