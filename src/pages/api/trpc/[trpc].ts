@@ -10,12 +10,17 @@ export const appRouter = trpc
       slug: z.string().min(1),
     }),
     async resolve({ input }) {
-      const count = await prisma.shortLink.count({
-        where: {
-          slug: input.slug,
-        },
-      });
-      return { used: count > 0 };
+      try {
+        const count = await prisma.shortLink.count({
+          where: {
+            slug: input.slug,
+          },
+        });
+        return { used: count > 0 };
+      } catch (e) {
+        console.log(e);
+        console;
+      }
     },
   })
   .query("getAllSlugs", {
