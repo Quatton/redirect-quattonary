@@ -1,5 +1,6 @@
 import { ShortLink } from "@prisma/client";
 import classNames from "classnames";
+import copy from "copy-to-clipboard";
 import { debounce } from "lodash";
 import { nanoid } from "nanoid";
 import { FocusEventHandler, useState } from "react";
@@ -108,6 +109,7 @@ const ViewLinks: React.FC = () => {
                   className={slugInput}
                   value={createForm.slug}
                   onChange={(e) => {
+                    debounce(slugCheck.refetch, 100);
                     setCreateForm({ ...createForm, slug: e.target.value });
                   }}
                 />
@@ -127,7 +129,7 @@ const ViewLinks: React.FC = () => {
                   className="
                   bg-pink-500 px-4 py-2 rounded-md 
                   shadow-md hover:bg-pink-400 [&:not(:disabled)]:hover:-translate-y-1 transition-all 
-                  disabled:bg-pink-900 disabled:text-gray-700"
+                  disabled:bg-pink-800 disabled:text-gray-700"
                   disabled={slugCheck.isFetched && slugCheck.data!.used}
                 >
                   Create
@@ -138,20 +140,29 @@ const ViewLinks: React.FC = () => {
               <tr className="even:bg-neutral-800" key={shortlink.id}>
                 <td>{shortlink.id}</td>
                 <td>
-                  <input
-                    onFocus={() => updateFormInput.onFocus(shortlink)}
-                    onBlur={() => updateFormInput.onBlur()}
-                    type="text"
-                    value={
-                      updateForm.id === shortlink.id
-                        ? updateForm.slug
-                        : shortlink.slug
-                    }
-                    onChange={(e) =>
-                      updateForm.id === shortlink.id &&
-                      setUpdateForm({ ...updateForm, slug: e.target.value })
-                    }
-                  />
+                  <div className="flex items-center [&:hover_button]:block [&_button]:hidden">
+                    <input
+                      onFocus={() => updateFormInput.onFocus(shortlink)}
+                      onBlur={() => updateFormInput.onBlur()}
+                      type="text"
+                      value={
+                        updateForm.id === shortlink.id
+                          ? updateForm.slug
+                          : shortlink.slug
+                      }
+                      onChange={(e) =>
+                        updateForm.id === shortlink.id &&
+                        setUpdateForm({ ...updateForm, slug: e.target.value })
+                      }
+                    />
+                    <button
+                      className="absolute bg-neutral-600 rounded-md 
+                    hover:bg-neutral-500 right-9 px-2 py-1 transition-all"
+                      onClick={() => copy(`${origin}/${shortlink.slug}`)}
+                    >
+                      Copy
+                    </button>
+                  </div>
                 </td>
                 <td>
                   <input

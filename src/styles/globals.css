@@ -10,10 +10,11 @@ tr.header > th {
 }
 
 td {
-  @apply p-2;
+  @apply p-2 relative;
 }
-td > input {
-  @apply bg-transparent px-4 py-2 truncate 
+
+td input {
+  @apply bg-transparent px-4 py-2 truncate
   bg-stone-800 rounded-md border-slate-300 border
   focus:shadow-inner shadow-md focus:ring-offset-2 focus:ring-1
 focus:ring-pink-500 focus:outline-none ring-offset-pink-500;
