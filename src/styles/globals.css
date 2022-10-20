@@ -19,6 +19,13 @@ td input {
   focus:shadow-inner shadow-md focus:ring-offset-2 focus:ring-1
 focus:ring-pink-500 focus:outline-none ring-offset-pink-500;
 }
+
+td:nth-child(2) > * {
+  @apply w-32;
+}
+td:nth-child(3) > * {
+  @apply w-56;
+}
 td:nth-child(4) {
   @apply text-center;
 }
