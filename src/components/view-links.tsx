@@ -90,10 +90,13 @@ const ViewLinks: React.FC = () => {
 
   return (
     <div className="container h-3/4 flex flex-col items-center p-8">
+      <div className="mb-4 text-3xl bg-gradient-to-r from-green-300 via-blue-500 to-purple-600 bg-clip-text text-transparent font-bold">
+        {origin}/...
+      </div>
       <table className="w-full rounded-md border-spacing-0 border-separate shadow-md">
         <thead>
           <tr className="header">
-            <th>ID</th>
+            <th className="rounded-tl-md">ID</th>
             <th>SLUG</th>
             <th>URL</th>
             <th className="rounded-tr-md">ACTIONS</th>
