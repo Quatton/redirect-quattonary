@@ -5,9 +5,10 @@
   @apply box-border;
 }
 
-th {
+tr.header > th {
   @apply px-6 py-3 bg-pink-500;
 }
+
 td {
   @apply p-2;
 }

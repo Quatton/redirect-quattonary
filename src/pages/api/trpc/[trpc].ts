@@ -42,6 +42,24 @@ export const appRouter = trpc
       }
     },
   })
+
+  .mutation("deleteSlug", {
+    input: z.object({
+      id: z.number(),
+    }),
+    async resolve({ input }) {
+      try {
+        await prisma.shortLink.delete({
+          where: {
+            id: input.id,
+          },
+        });
+      } catch (e) {
+        console.log(e);
+      }
+    },
+  })
+
   .mutation("updateSlug", {
     input: z.object({
       id: z.number(),

@@ -2,76 +2,178 @@ import { ShortLink } from "@prisma/client";
 import classNames from "classnames";
 import { debounce } from "lodash";
 import { nanoid } from "nanoid";
-import { useState } from "react";
+import { FocusEventHandler, useState } from "react";
 import { trpc } from "../../utils/trpc";
 
 type Form = {
+  id?: number;
   slug: string;
   url: string;
 };
 
 const ViewLinks: React.FC = () => {
-  const [createForm, setCreateForm] = useState<Form>({ slug: "", url: "" });
-  const url = window.location.origin;
+  const formInitialState = { slug: "", url: "" };
+  const [createForm, setCreateForm] = useState<Form>(formInitialState);
+  const [updateForm, setUpdateForm] = useState<Form>(formInitialState);
+  const origin = window.location.origin;
 
   const slugCheck = trpc.useQuery(["slugCheck", { slug: createForm.slug }], {
     refetchOnReconnect: false, // replacement for enable: false which isn't respected.
     refetchOnMount: false,
     refetchOnWindowFocus: false,
   });
+
+  const getAllSlugs = trpc.useQuery(["getAllSlugs"], {
+    refetchOnReconnect: false, // replacement for enable: false which isn't respected.
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+  });
+
   const createSlug = trpc.useMutation(["createSlug"], {
     onSuccess: () => {
       getAllSlugs.refetch();
     },
   });
 
-  const input =
-    "text-black my-1 p-2 bg-white border shadow-sm border-slate-300 placeholder-slate-400 focus:outline-none focus:border-pink-500 focus:ring-pink-500 block w-full rounded-md sm:text-sm focus:ring-1";
+  const updateSlug = trpc.useMutation(["updateSlug"], {
+    onSuccess: () => {
+      getAllSlugs.refetch();
+    },
+  });
 
-  const slugInput = classNames(input, {
+  const deleteSlug = trpc.useMutation(["deleteSlug"], {
+    onSuccess: () => {
+      getAllSlugs.refetch();
+    },
+  });
+
+  const slugInput = classNames({
     "border-red-500": slugCheck.isFetched && slugCheck.data!.used,
     "text-red-500": slugCheck.isFetched && slugCheck.data!.used,
   });
 
-  const getAllSlugs = trpc.useQuery(["getAllSlugs"]);
-  const { shortlinks } = getAllSlugs.data ?? { shortlinks: [] as ShortLink[] };
+  const { shortlinks } = getAllSlugs.data || { shortlinks: [] as ShortLink[] };
+
+  const updateFormInput = {
+    onFocus(shortlink: ShortLink) {
+      if (updateForm?.id !== shortlink.id) {
+        setUpdateForm({ ...shortlink });
+      }
+    },
+    onBlur() {
+      updateSlug.mutate(
+        { id: -1, ...updateForm },
+        {
+          onSuccess() {
+            getAllSlugs.refetch;
+          },
+        }
+      );
+      updateSlug.reset;
+      setUpdateForm(formInitialState);
+    },
+  };
+
+  const createFormSubmit = () => {
+    createSlug.mutate(
+      { ...createForm },
+      {
+        onSuccess() {
+          getAllSlugs.refetch;
+          createSlug.reset;
+          setCreateForm(formInitialState);
+        },
+      }
+    );
+  };
 
   return (
     <div className="container h-3/4 flex flex-col items-center p-8">
       <table className="w-full rounded-md border-spacing-0 border-separate shadow-md">
         <thead>
-          <th className="rounded-tl-md">ID</th>
-          <th>SLUG</th>
-          <th>URL</th>
-          <th className="rounded-tr-md">ACTIONS</th>
+          <tr className="header">
+            <th>ID</th>
+            <th>SLUG</th>
+            <th>URL</th>
+            <th className="rounded-tr-md">ACTIONS</th>
+          </tr>
         </thead>
         <tbody>
           <>
             <tr>
               <td></td>
               <td>
-                <input type="text" value={createForm.slug} />
+                <input
+                  type="text"
+                  className={slugInput}
+                  value={createForm.slug}
+                  onChange={(e) => {
+                    setCreateForm({ ...createForm, slug: e.target.value });
+                  }}
+                />
               </td>
               <td>
-                <input type="url" value={createForm.url} />
+                <input
+                  type="url"
+                  value={createForm.url}
+                  onChange={(e) => {
+                    setCreateForm({ ...createForm, url: e.target.value });
+                  }}
+                />
               </td>
               <td>
-                <button className="bg-pink-500 px-4 py-2 rounded-md shadow-md hover:bg-pink-400 hover:-translate-y-1 transition-all">
+                <button
+                  onClick={() => createFormSubmit()}
+                  className="
+                  bg-pink-500 px-4 py-2 rounded-md 
+                  shadow-md hover:bg-pink-400 [&:not(:disabled)]:hover:-translate-y-1 transition-all 
+                  disabled:bg-pink-900 disabled:text-gray-700"
+                  disabled={slugCheck.isFetched && slugCheck.data!.used}
+                >
                   Create
                 </button>
               </td>
             </tr>
             {shortlinks.map((shortlink) => (
-              <tr className="even:bg-neutral-800">
+              <tr className="even:bg-neutral-800" key={shortlink.id}>
                 <td>{shortlink.id}</td>
                 <td>
-                  <input type="text" value={shortlink.slug} />
+                  <input
+                    onFocus={() => updateFormInput.onFocus(shortlink)}
+                    onBlur={() => updateFormInput.onBlur()}
+                    type="text"
+                    value={
+                      updateForm.id === shortlink.id
+                        ? updateForm.slug
+                        : shortlink.slug
+                    }
+                    onChange={(e) =>
+                      updateForm.id === shortlink.id &&
+                      setUpdateForm({ ...updateForm, slug: e.target.value })
+                    }
+                  />
                 </td>
                 <td>
-                  <input type="url" value={shortlink.url} />
+                  <input
+                    onFocus={() => updateFormInput.onFocus(shortlink)}
+                    onBlur={() => updateFormInput.onBlur()}
+                    type="url"
+                    value={
+                      updateForm.id === shortlink.id
+                        ? updateForm.url
+                        : shortlink.url
+                    }
+                    onChange={(e) =>
+                      updateForm.id === shortlink.id &&
+                      setUpdateForm({ ...updateForm, url: e.target.value })
+                    }
+                  />
                 </td>
                 <td>
-                  <button className="text-red-500 hover:underline underline-offset-2">
+                  <button
+                    className="text-red-500 hover:underline underline-offset-2"
+                    onClick={(e) => deleteSlug.mutate({ id: shortlink.id })}
+                  >
                     Delete
                   </button>
                 </td>

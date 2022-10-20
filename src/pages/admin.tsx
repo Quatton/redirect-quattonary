@@ -13,9 +13,8 @@ const Admin: NextPage = () => {
 
   return (
     <div className="flex flex-col justify-center items-center h-screen bg-gray-950 text-white">
-      {(session || process.env.NODE_ENV) === "development" ? (
-        session?.user.role === "admin" ||
-        process.env.NODE_ENV === "development" ? (
+      {session ? (
+        session?.user.role === "admin" ? (
           <>
             <Suspense>
               <ViewLinks />
