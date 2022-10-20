@@ -61,7 +61,8 @@ const ViewLinks: React.FC = () => {
         setUpdateForm({ ...shortlink });
       }
     },
-    onBlur() {
+    onBlur(shortlink: ShortLink) {
+      if (shortlink.id === updateForm.id) return; //waste of time
       updateSlug.mutate(
         { id: -1, ...updateForm },
         {
@@ -146,7 +147,7 @@ const ViewLinks: React.FC = () => {
                   <div className="flex items-center [&:hover_button]:block [&_button]:hidden">
                     <input
                       onFocus={() => updateFormInput.onFocus(shortlink)}
-                      onBlur={() => updateFormInput.onBlur()}
+                      onBlur={() => updateFormInput.onBlur(shortlink)}
                       type="text"
                       value={
                         updateForm.id === shortlink.id
@@ -170,7 +171,7 @@ const ViewLinks: React.FC = () => {
                 <td>
                   <input
                     onFocus={() => updateFormInput.onFocus(shortlink)}
-                    onBlur={() => updateFormInput.onBlur()}
+                    onBlur={() => updateFormInput.onBlur(shortlink)}
                     type="url"
                     value={
                       updateForm.id === shortlink.id
