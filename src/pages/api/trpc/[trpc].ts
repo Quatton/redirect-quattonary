@@ -7,7 +7,7 @@ export const appRouter = trpc
   .router()
   .query("slugCheck", {
     input: z.object({
-      slug: z.string(),
+      slug: z.string().min(1),
     }),
     async resolve({ input }) {
       const count = await prisma.shortLink.count({
@@ -26,8 +26,8 @@ export const appRouter = trpc
   })
   .mutation("createSlug", {
     input: z.object({
-      slug: z.string(),
-      url: z.string(),
+      slug: z.string().min(1),
+      url: z.string().min(1),
     }),
     async resolve({ input }) {
       try {
@@ -45,7 +45,7 @@ export const appRouter = trpc
 
   .mutation("deleteSlug", {
     input: z.object({
-      id: z.number(),
+      id: z.number().min(1),
     }),
     async resolve({ input }) {
       try {
@@ -59,12 +59,11 @@ export const appRouter = trpc
       }
     },
   })
-
   .mutation("updateSlug", {
     input: z.object({
-      id: z.number(),
-      slug: z.string(),
-      url: z.string(),
+      id: z.number().min(1),
+      slug: z.string().min(1),
+      url: z.string().min(1),
     }),
     async resolve({ input }) {
       try {
