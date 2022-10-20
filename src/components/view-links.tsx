@@ -113,7 +113,7 @@ const ViewLinks: React.FC = () => {
                   className={slugInput}
                   value={createForm.slug}
                   onChange={(e) => {
-                    debounce(slugCheck.refetch, 100);
+                    if (e.target.value) debounce(slugCheck.refetch, 100);
                     setCreateForm({ ...createForm, slug: e.target.value });
                   }}
                 />

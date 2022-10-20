@@ -7,20 +7,15 @@ export const appRouter = trpc
   .router()
   .query("slugCheck", {
     input: z.object({
-      slug: z.string().min(1),
+      slug: z.string(),
     }),
     async resolve({ input }) {
-      try {
-        const count = await prisma.shortLink.count({
-          where: {
-            slug: input.slug,
-          },
-        });
-        return { used: count > 0 };
-      } catch (e) {
-        console.log(e);
-        console;
-      }
+      const count = await prisma.shortLink.count({
+        where: {
+          slug: input.slug,
+        },
+      });
+      return { used: count > 0 };
     },
   })
   .query("getAllSlugs", {
