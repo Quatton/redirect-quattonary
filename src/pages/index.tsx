@@ -4,10 +4,6 @@ import dynamic from "next/dynamic";
 import { Suspense } from "react";
 import ViewLinks from "../components/view-links";
 
-const CreateLinkForm = dynamic(() => import("../components/create-link"), {
-  ssr: false,
-});
-
 const Admin: NextPage = () => {
   const { data: session } = useSession();
 

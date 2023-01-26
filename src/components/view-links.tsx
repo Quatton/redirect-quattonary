@@ -2,9 +2,8 @@ import { ShortLink } from "@prisma/client";
 import classNames from "classnames";
 import copy from "copy-to-clipboard";
 import { debounce } from "lodash";
-import { nanoid } from "nanoid";
 import { useSession } from "next-auth/react";
-import { FocusEventHandler, useState } from "react";
+import { useState } from "react";
 import { trpc } from "../../utils/trpc";
 
 type Form = {
