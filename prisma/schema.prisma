@@ -6,8 +6,8 @@ generator client {
 }
 
 datasource db {
-  provider             = "mysql"
-  url                  = env("DATABASE_URL")
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
   relationMode = "prisma"
 }
 
@@ -15,29 +15,29 @@ model ShortLink {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
 
-  url String @db.VarChar(2000)
+  url     String @db.VarChar(2000)
   ownerId String
 
-  owner User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  slug String @unique
+  owner User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  slug  String @unique
 
   @@unique([ownerId])
   @@index([slug])
 }
 
 model Account {
-  id                 String  @id @default(cuid())
-  userId             String
-  type               String
-  provider           String
-  providerAccountId  String
-  refresh_token      String?  @db.Text
-  access_token       String?  @db.Text
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String?  @db.Text
-  session_state      String?
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -56,9 +56,9 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String      @id @default(cuid())
   name          String?
-  email         String?   @unique
+  email         String?     @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
