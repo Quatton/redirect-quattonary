@@ -15,7 +15,7 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     session({ session, token, user }) {
-      session.user.role = user.role; // Add role value to user object so it is passed along with session
+      session.user.id = user.id;
       return session;
     },
   },

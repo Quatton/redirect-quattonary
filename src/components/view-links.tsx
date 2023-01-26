@@ -3,6 +3,7 @@ import classNames from "classnames";
 import copy from "copy-to-clipboard";
 import { debounce } from "lodash";
 import { nanoid } from "nanoid";
+import { useSession } from "next-auth/react";
 import { FocusEventHandler, useState } from "react";
 import { trpc } from "../../utils/trpc";
 
@@ -13,6 +14,7 @@ type Form = {
 };
 
 const ViewLinks: React.FC = () => {
+  const session = useSession();
   const formInitialState = { slug: "", url: "" };
   const [createForm, setCreateForm] = useState<Form>(formInitialState);
   const [updateForm, setUpdateForm] = useState<Form>(formInitialState);
@@ -24,11 +26,14 @@ const ViewLinks: React.FC = () => {
     refetchOnWindowFocus: false,
   });
 
-  const getAllSlugs = trpc.useQuery(["getAllSlugs"], {
-    refetchOnReconnect: false, // replacement for enable: false which isn't respected.
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-  });
+  const getAllSlugs = trpc.useQuery(
+    ["getAllSlugs", { ownerId: session.data?.user.id! }],
+    {
+      refetchOnReconnect: false, // replacement for enable: false which isn't respected.
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
+    }
+  );
 
   const createSlug = trpc.useMutation(["createSlug"], {
     onSuccess: () => {
@@ -78,7 +83,10 @@ const ViewLinks: React.FC = () => {
 
   const createFormSubmit = () => {
     createSlug.mutate(
-      { ...createForm },
+      {
+        ...createForm,
+        ownerId: session.data?.user.id!,
+      },
       {
         onSuccess() {
           getAllSlugs.refetch;

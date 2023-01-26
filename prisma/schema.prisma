@@ -3,14 +3,12 @@
 
 generator client {
   provider = "prisma-client-js"
-
-  previewFeatures = ["referentialIntegrity"]
 }
 
 datasource db {
   provider             = "mysql"
   url                  = env("DATABASE_URL")
-  referentialIntegrity = "prisma"
+  relationMode = "prisma"
 }
 
 model ShortLink {
@@ -18,10 +16,13 @@ model ShortLink {
   createdAt DateTime @default(now())
 
   url String @db.VarChar(2000)
+  ownerId String
 
+  owner User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   slug String @unique
 
-  @@index(slug)
+  @@unique([ownerId])
+  @@index([slug])
 }
 
 model Account {
@@ -41,6 +42,7 @@ model Account {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
+  @@index([userId])
 }
 
 model Session {
@@ -49,6 +51,8 @@ model Session {
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model User {
@@ -57,9 +61,9 @@ model User {
   email         String?   @unique
   emailVerified DateTime?
   image         String?
-  role          String?
   accounts      Account[]
   sessions      Session[]
+  shortLinks    ShortLink[]
 }
 
 model VerificationToken {
